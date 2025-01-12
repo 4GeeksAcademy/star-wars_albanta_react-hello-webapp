@@ -1,26 +1,73 @@
-import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
-import { Link, useParams } from "react-router-dom";
-import { Context } from "../store/appContext";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import "../styles/single.css";
 
-export const Single = props => {
-	const { store, actions } = useContext(Context);
-	const params = useParams();
-	return (
-		<div className="jumbotron">
-			<h1 className="display-4">This will show the demo element: {store.demo[params.theid].title}</h1>
+export const Single = () => {
+    const { type, id } = useParams();
+    const navigate = useNavigate();
+    const [details, setDetails] = useState(null);
 
-			<hr className="my-4" />
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await fetch(`https://www.swapi.tech/api/${type}/${id}`);
+                const data = await response.json();
+                setDetails(data.result.properties);
+            } catch (error) {
+                console.error("Error fetching details:", error);
+            }
+        };
+        fetchDetails();
+    }, [type, id]);
 
-			<Link to="/">
-				<span className="btn btn-primary btn-lg" href="#" role="button">
-					Back home
-				</span>
-			</Link>
-		</div>
-	);
+    return (
+        <div className="container single-container">
+            {details ? (
+                <div className="row">
+                    <div className="col-md-6">
+                        <img
+                            src={`https://starwars-visualguide.com/assets/img/${type === "people" ? "characters" : "planets"}/${id}.jpg`}
+                            alt={details.name}
+                            className="img-fluid rounded"
+                            onError={(e) => (e.target.src = "https://via.placeholder.com/400x300?text=No+Image")}
+                        />
+                    </div>
+                    <div className="col-md-6 text-light">
+                        <h1>{details.name}</h1>
+                        {type === "people" && (
+                            <>
+                                <p><strong>Birth Year:</strong> {details.birth_year}</p>
+                                <p><strong>Gender:</strong> {details.gender}</p>
+                                <p><strong>Height:</strong> {details.height} cm</p>
+                                <p><strong>Mass:</strong> {details.mass} kg</p>
+                                <p><strong>Eye Color:</strong> {details.eye_color}</p>
+                            </>
+                        )}
+                        {type === "planets" && (
+                            <>
+                                <p><strong>Climate:</strong> {details.climate}</p>
+                                <p><strong>Population:</strong> {details.population}</p>
+                                <p><strong>Orbital Period:</strong> {details.orbital_period}</p>
+                                <p><strong>Surface Water:</strong> {details.surface_water}</p>
+                                <p><strong>Terrain:</strong> {details.terrain}</p>
+                            </>
+                        )}
+                        <button className="btn btn-outline-light mt-3" onClick={() => navigate(-1)}>
+                            <i className="fas fa-arrow-left"></i> Back
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+                    <div className="spinner-border text-light" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 };
 
-Single.propTypes = {
-	match: PropTypes.object
-};
+
+
+

@@ -1,0 +1,38 @@
+body {
+    background-color: #0a0e27; /* Azul marino */
+    background-image: url("https://www.transparenttextures.com/patterns/stardust.png"); /* Estrellas */
+    background-size: cover;
+    color: #fff; /* Texto blanco */
+}
+
+h1 {
+    font-family: "Star Jedi", sans-serif; /* Puedes usar una fuente tipo Star Wars si la tienes */
+    text-shadow: 2px 2px 5px #000;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+.card-img-top {
+    object-fit: cover;
+    height: 200px; /* Ajusta el tamaño según sea necesario */
+}
+
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+    transition: all 0.3s ease;
+}
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+}
