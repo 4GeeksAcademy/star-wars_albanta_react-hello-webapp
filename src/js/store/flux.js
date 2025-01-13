@@ -1,12 +1,12 @@
-const getState = ({ getStore, getActions, setStore }) => {
+const getState = ({ getStore, setStore }) => {
     return {
         store: {
-            characters: [], // Lista de personajes
-            planets: [], // Lista de planetas
-            favorites: [] // Lista de favoritos
+            characters: [], 
+            planets: [], 
+            favorites: [] 
         },
         actions: {
-            // Acción genérica para obtener datos desde la API
+            
             fetchData: async (endpoint) => {
                 try {
                     const response = await fetch(`https://www.swapi.tech/api/${endpoint}`);
@@ -19,20 +19,20 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            // Agregar un elemento a favoritos
+            
             addFavorite: (item) => {
                 const store = getStore();
-                const isAlreadyFavorite = store.favorites.some((fav) => fav.uid === item.uid);
+                const isAlreadyFavorite = store.favorites.some((fav) => fav.name === item.name);
 
                 if (!isAlreadyFavorite) {
                     setStore({ favorites: [...store.favorites, item] });
                 }
             },
 
-            // Eliminar un elemento de favoritos
-            removeFavorite: (uid) => {
+            
+            removeFavorite: (name) => {
                 const store = getStore();
-                const updatedFavorites = store.favorites.filter((fav) => fav.uid !== uid);
+                const updatedFavorites = store.favorites.filter((fav) => fav.name !== name); // Filtra solo el favorito con el uid
                 setStore({ favorites: updatedFavorites });
             }
         }
@@ -40,3 +40,4 @@ const getState = ({ getStore, getActions, setStore }) => {
 };
 
 export default getState;
+

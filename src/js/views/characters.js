@@ -1,24 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
-import "../styles/characters.css";
+import "../../styles/characters.css";
 
 export const Characters = () => {
     const { store, actions } = useContext(Context);
-    const [selectedCharacter, setSelectedCharacter] = useState(null);
 
     useEffect(() => {
-        actions.fetchData("people");
+        actions.fetchData("people"); // Llama a la API para obtener los personajes
     }, []);
-
-    const fetchCharacterDetails = async (id) => {
-        try {
-            const response = await fetch(`https://www.swapi.tech/api/people/${id}`);
-            const data = await response.json();
-            setSelectedCharacter(data.result.properties);
-        } catch (error) {
-            console.error("Error fetching character details:", error);
-        }
-    };
 
     return (
         <div className="container">
@@ -35,35 +25,22 @@ export const Characters = () => {
                             />
                             <div className="card-body">
                                 <h5 className="card-title">{character.name}</h5>
-                                <button
-                                    className="btn btn-outline-primary"
-                                    onClick={() => fetchCharacterDetails(character.uid)}
-                                >
+                              
+                                <Link to={`/single/people/${character.uid}`} className="btn btn-outline-primary me-2">
                                     View Details
+                                </Link>
+                             
+                                <button
+                                    className="btn btn-outline-warning"
+                                    onClick={() => actions.addFavorite({ name: character.name, uid: character.uid })}
+                                >
+                                    <i className="fas fa-heart"></i> Add to Favorites
                                 </button>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-            {selectedCharacter && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>{selectedCharacter.name}</h2>
-                        <p><strong>Birth Year:</strong> {selectedCharacter.birth_year}</p>
-                        <p><strong>Gender:</strong> {selectedCharacter.gender}</p>
-                        <p><strong>Height:</strong> {selectedCharacter.height} cm</p>
-                        <p><strong>Mass:</strong> {selectedCharacter.mass} kg</p>
-                        <p><strong>Eye Color:</strong> {selectedCharacter.eye_color}</p>
-                        <button
-                            className="btn btn-outline-light mt-3"
-                            onClick={() => setSelectedCharacter(null)}
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

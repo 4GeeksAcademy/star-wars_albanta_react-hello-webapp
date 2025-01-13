@@ -16,7 +16,6 @@ const root = createRoot(document.querySelector("#app"));
 
 // Renderizar la aplicación
 root.render(
-    <AppContext>
         <Layout />
-    </AppContext>
+   
 );

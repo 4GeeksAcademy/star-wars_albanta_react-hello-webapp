@@ -36,7 +36,7 @@ export const Navbar = () => {
                                     <span>{fav.name}</span>
                                     <button
                                         className="btn btn-sm btn-danger ms-2"
-                                        onClick={() => fav.uid && actions.removeFavorite(fav.uid)}
+                                        onClick={() => fav.uid && actions.removeFavorite(fav.name)}
                                     >
                                         <i className="fas fa-trash"></i>
                                     </button>

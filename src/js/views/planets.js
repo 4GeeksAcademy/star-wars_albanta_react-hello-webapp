@@ -1,24 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
-import "../styles/planets.css";
+import "../../styles/planets.css";
 
 export const Planets = () => {
     const { store, actions } = useContext(Context);
-    const [selectedPlanet, setSelectedPlanet] = useState(null);
 
     useEffect(() => {
-        actions.fetchData("planets");
+        actions.fetchData("planets"); 
     }, []);
-
-    const fetchPlanetDetails = async (id) => {
-        try {
-            const response = await fetch(`https://www.swapi.tech/api/planets/${id}`);
-            const data = await response.json();
-            setSelectedPlanet(data.result.properties);
-        } catch (error) {
-            console.error("Error fetching planet details:", error);
-        }
-    };
 
     return (
         <div className="container">
@@ -35,35 +25,23 @@ export const Planets = () => {
                             />
                             <div className="card-body">
                                 <h5 className="card-title">{planet.name}</h5>
-                                <button
-                                    className="btn btn-outline-primary"
-                                    onClick={() => fetchPlanetDetails(planet.uid)}
-                                >
+                               
+                                <Link to={`/single/planets/${planet.uid}`} className="btn btn-outline-primary me-2">
                                     View Details
+                                </Link>
+                               
+                                <button
+                                    className="btn btn-outline-warning"
+                                    onClick={() => actions.addFavorite({ name: planet.name, uid: planet.uid })}
+                                >
+                                    <i className="fas fa-heart"></i> Add to Favorites
                                 </button>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-            {selectedPlanet && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>{selectedPlanet.name}</h2>
-                        <p><strong>Climate:</strong> {selectedPlanet.climate}</p>
-                        <p><strong>Population:</strong> {selectedPlanet.population}</p>
-                        <p><strong>Orbital Period:</strong> {selectedPlanet.orbital_period}</p>
-                        <p><strong>Terrain:</strong> {selectedPlanet.terrain}</p>
-                        <p><strong>Surface Water:</strong> {selectedPlanet.surface_water}</p>
-                        <button
-                            className="btn btn-outline-light mt-3"
-                            onClick={() => setSelectedPlanet(null)}
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
+
