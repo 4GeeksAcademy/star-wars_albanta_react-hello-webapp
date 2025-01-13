@@ -1,25 +1,24 @@
-
-import React, { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import "../styles/planets.css";
 
 export const Planets = () => {
     const { store, actions } = useContext(Context);
+    const [selectedPlanet, setSelectedPlanet] = useState(null);
 
     useEffect(() => {
         actions.fetchData("planets");
     }, []);
 
-    if (!store.planets.length) {
-        return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-                <div className="spinner-border text-light" role="status">
-                    <span className="sr-only">Loading...</span>
-                </div>
-            </div>
-        );
-    }
+    const fetchPlanetDetails = async (id) => {
+        try {
+            const response = await fetch(`https://www.swapi.tech/api/planets/${id}`);
+            const data = await response.json();
+            setSelectedPlanet(data.result.properties);
+        } catch (error) {
+            console.error("Error fetching planet details:", error);
+        }
+    };
 
     return (
         <div className="container">
@@ -30,33 +29,41 @@ export const Planets = () => {
                         <div className="card bg-dark text-light">
                             <img
                                 src={`https://starwars-visualguide.com/assets/img/planets/${planet.uid}.jpg`}
-                                className="card-img-top"
                                 alt={planet.name}
+                                className="card-img-top"
                                 onError={(e) => (e.target.src = "https://via.placeholder.com/400x300?text=No+Image")}
                             />
                             <div className="card-body">
                                 <h5 className="card-title">{planet.name}</h5>
-                                <p className="card-text">
-                                    <strong>Climate:</strong> {planet.climate || "unknown"} <br />
-                                    <strong>Population:</strong> {planet.population || "unknown"} <br />
-                                    <strong>Terrain:</strong> {planet.terrain || "unknown"}
-                                </p>
-                                <Link to={`/single/planets/${planet.uid}`} className="btn btn-outline-primary me-2">
-                                    View Details
-                                </Link>
                                 <button
-                                    className="btn btn-outline-warning"
-                                    onClick={() => actions.addFavorite({ name: planet.name, uid: planet.uid })}
+                                    className="btn btn-outline-primary"
+                                    onClick={() => fetchPlanetDetails(planet.uid)}
                                 >
-                                    <i className="fas fa-heart"></i>
+                                    View Details
                                 </button>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
+            {selectedPlanet && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>{selectedPlanet.name}</h2>
+                        <p><strong>Climate:</strong> {selectedPlanet.climate}</p>
+                        <p><strong>Population:</strong> {selectedPlanet.population}</p>
+                        <p><strong>Orbital Period:</strong> {selectedPlanet.orbital_period}</p>
+                        <p><strong>Terrain:</strong> {selectedPlanet.terrain}</p>
+                        <p><strong>Surface Water:</strong> {selectedPlanet.surface_water}</p>
+                        <button
+                            className="btn btn-outline-light mt-3"
+                            onClick={() => setSelectedPlanet(null)}
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
-
-

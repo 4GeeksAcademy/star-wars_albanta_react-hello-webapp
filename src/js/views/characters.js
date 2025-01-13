@@ -1,24 +1,24 @@
-import React, { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import "../styles/characters.css";
 
 export const Characters = () => {
     const { store, actions } = useContext(Context);
+    const [selectedCharacter, setSelectedCharacter] = useState(null);
 
     useEffect(() => {
         actions.fetchData("people");
     }, []);
 
-    if (!store.characters.length) {
-        return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-                <div className="spinner-border text-light" role="status">
-                    <span className="sr-only">Loading...</span>
-                </div>
-            </div>
-        );
-    }
+    const fetchCharacterDetails = async (id) => {
+        try {
+            const response = await fetch(`https://www.swapi.tech/api/people/${id}`);
+            const data = await response.json();
+            setSelectedCharacter(data.result.properties);
+        } catch (error) {
+            console.error("Error fetching character details:", error);
+        }
+    };
 
     return (
         <div className="container">
@@ -29,33 +29,41 @@ export const Characters = () => {
                         <div className="card bg-dark text-light">
                             <img
                                 src={`https://starwars-visualguide.com/assets/img/characters/${character.uid}.jpg`}
-                                className="card-img-top"
                                 alt={character.name}
+                                className="card-img-top"
                                 onError={(e) => (e.target.src = "https://via.placeholder.com/400x300?text=No+Image")}
                             />
                             <div className="card-body">
                                 <h5 className="card-title">{character.name}</h5>
-                                <p className="card-text">
-                                    <strong>Gender:</strong> {character.gender || "unknown"} <br />
-                                    <strong>Eye Color:</strong> {character.eye_color || "unknown"} <br />
-                                    <strong>Birth Year:</strong> {character.birth_year || "unknown"} <br />
-                                </p>
-                                <Link to={`/single/character/${character.uid}`} className="btn btn-outline-primary me-2">
-                                    View Details
-                                </Link>
                                 <button
-                                    className="btn btn-outline-warning"
-                                    onClick={() => actions.addFavorite({ name: character.name, uid: character.uid })}
+                                    className="btn btn-outline-primary"
+                                    onClick={() => fetchCharacterDetails(character.uid)}
                                 >
-                                    <i className="fas fa-heart"></i>
+                                    View Details
                                 </button>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
+            {selectedCharacter && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>{selectedCharacter.name}</h2>
+                        <p><strong>Birth Year:</strong> {selectedCharacter.birth_year}</p>
+                        <p><strong>Gender:</strong> {selectedCharacter.gender}</p>
+                        <p><strong>Height:</strong> {selectedCharacter.height} cm</p>
+                        <p><strong>Mass:</strong> {selectedCharacter.mass} kg</p>
+                        <p><strong>Eye Color:</strong> {selectedCharacter.eye_color}</p>
+                        <button
+                            className="btn btn-outline-light mt-3"
+                            onClick={() => setSelectedCharacter(null)}
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
-
-

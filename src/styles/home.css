@@ -1,0 +1,59 @@
+/* Fondo y colores generales */
+body {
+    background-color: #000;
+    color: #ffffff;
+    font-family: "Arial", sans-serif;
+}
+
+/* Título principal */
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Descripción */
+p {
+    font-size: 1.2rem;
+    color: #dddddd;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+/* Botones */
+.btn {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.5rem;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* Contenedor general */
+.container {
+    margin-top: 5rem;
+    text-align: center;
+}
