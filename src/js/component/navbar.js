@@ -9,7 +9,7 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-light bg-light mb-3 px-3">
             <Link to="/">
-                <span className="navbar-brand mb-0 h1">Star Wars Database</span>
+                <span className="navbar-brand mb-0 h1">Star Wars Info</span>
             </Link>
             <div className="ml-auto d-flex align-items-center">
                 <Link to="/characters" className="btn btn-outline-primary mx-1">
